@@ -1,8 +1,8 @@
-import server from './server.ts'
+import app from './server.tsx'
 
 const port = 3000
 
-server.listen(port, () => {
+app.listen(port, () => {
   // eslint-disable-next-line no-console
   console.log('Server listening on port', port)
 })
