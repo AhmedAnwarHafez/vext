@@ -1,24 +1,34 @@
-import * as Path from 'node:path'
 import express from 'express'
 import http from 'http'
-import { Server } from 'socket.io'
 import * as elements from 'typed-html'
-
+import { WebSocketServer } from 'ws'
 import { Layout } from './Layout.tsx'
 
 const app = express()
-const server = http.createServer(app)
-const io = new Server(server)
-export default server
+export default app
 
-const publicFolder = Path.resolve('public')
-app.use(express.static(publicFolder))
-app.use(express.urlencoded({ extended: false }))
+const wss = new WebSocketServer({ port: 8080 })
 
-io.on('connection', (socket) => {
-  console.log('a user connected')
+wss.on('connection', function connection(ws) {
+  ws.on('error', console.error)
+
+  ws.on('message', function message(data) {
+    console.log('received: %s', data)
+  })
+
+  ws.send('something')
 })
 
 app.get('/', (req, res) => {
-  res.send(<Layout>hi</Layout>)
+  res.send(
+    <Layout>
+      <div hx-ws="connect:ws://localhost:8080/chatroom">
+        <div id="chat_room"></div>
+        <form hx-ws="send">
+          <input name="chat_message" value="hello" />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </Layout>
+  )
 })
