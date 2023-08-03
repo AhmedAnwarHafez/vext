@@ -23,29 +23,54 @@ function broadcast(ws: WebSocket, data: string) {
 // Map to store the WebSocket connection with the user ID
 const userMap = new WeakMap<WebSocket, string>()
 
-wss.on('connection', (ws) => {
-  console.log('connected')
-
-  const userId = randomName()
-  userMap.set(ws, userId) // Associate the WebSocket connection with the user ID
-
-  broadcast(ws, <MemberJoined memberName={randomName()} />)
-
-  ws.on('message', (data) => {
-    const message = JSON.parse(data.toString())
-    console.log('received: %s', message.chat_message)
-
-    broadcast(
-      ws,
-      <Notification userId={userId} message={message.chat_message} />
-    )
-  })
-})
+// wss.on('connection', (ws) => {
+//   console.log('connected')
+//
+//   const userId = randomName()
+//   userMap.set(ws, userId) // Associate the WebSocket connection with the user ID
+//
+//   broadcast(ws, <MemberJoined memberName={randomName()} />)
+//
+//   ws.on('message', (data) => {
+//     const message = JSON.parse(data.toString())
+//     console.log('received: %s', message.chat_message)
+//
+//     // broadcast(
+//     //   ws,
+//     //   <Notification userId={userId} message={message.chat_message} />
+//     // )
+//
+//     wss.clients.forEach((client) => {
+//       // Send the message to all clients except the sender
+//       if (client.readyState === WebSocket.OPEN) {
+//         console.log(ws === client)
+//         broadcast(
+//           client,
+//           <Notification
+//             userId={userId}
+//             message={message.chat_message}
+//             isSelf={ws === client}
+//           />
+//         )
+//       }
+//     })
+//   })
+// })
 
 app.get('/', (req, res) => {
   res.send(
     <Layout>
-      <Form />
+      {/* <Form /> */}
+      <Notification
+        userId={'Sound Chicken'}
+        message={'This is cool, we want more of this'}
+        isSelf={false}
+      />
+      <Notification
+        userId={'Slimey Ant'}
+        message="Hello everyone"
+        isSelf={true}
+      />
     </Layout>
   )
 })

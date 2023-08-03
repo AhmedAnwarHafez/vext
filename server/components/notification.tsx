@@ -3,6 +3,7 @@ import * as elements from 'typed-html'
 interface NotificationProps {
   userId: string
   message: string
+  isSelf: boolean
 }
 
 export const Notification = (props: NotificationProps) => {
@@ -10,10 +11,18 @@ export const Notification = (props: NotificationProps) => {
     <div
       id="notifications"
       hx-swap-oob="afterend"
-      class="border rounded border-slate-100"
+      class={`${
+        props.isSelf ? 'self-end' : 'self-start'
+      } w-10/12  flex flex-col`}
     >
-      <p>{props.message}</p>
-      <p>{props.userId}</p>
+      {!props.isSelf ? <p class="">{props.userId}</p> : null}
+      <p
+        class={`${
+          props.isSelf ? 'text-right self-end' : 'text-left'
+        } border rounded w-max p-4`}
+      >
+        {props.message}
+      </p>
     </div>
   )
 }
