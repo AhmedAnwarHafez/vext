@@ -12,7 +12,6 @@ export function Layout({ children }: Attributes) {
       <body class="bg-slate-800 text-slate-50">
         <div hx-ext="ws" ws-connect="ws://localhost:8080" class="w-2/3 mx-auto flex flex-col items-center">
           ${children}
-          <div id="notifications"></div>
         </div>
       </body>
     </html>
