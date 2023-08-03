@@ -31,7 +31,7 @@ wss.on('connection', (ws) => {
 app.get('/', (req, res) => {
   res.send(
     <Layout>
-      <form ws-send>
+      <form ws-send _="on submit reset() me">
         <input name="chat_message" value="" />
         <button type="submit">Send</button>
       </form>
