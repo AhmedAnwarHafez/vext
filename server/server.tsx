@@ -20,16 +20,20 @@ function broadcast(ws: WebSocket, data: string) {
   ws.send(data, { binary: false })
 }
 
-// Map to store the WebSocket connection with the user ID
-const userMap = new WeakMap<WebSocket, string>()
-
-wss.on('connection', (ws) => {
+wss.on('connection', (ws, req) => {
   console.log('connected')
 
-  const userId = randomName()
-  userMap.set(ws, userId) // Associate the WebSocket connection with the user ID
+  ws.on('close', () => {
+    console.log('disconnected')
+    broadcast(ws, 'user left the chat')
+  })
 
-  broadcast(ws, <MemberJoined memberName={randomName()} />)
+  // access the cookie
+  const cookie = req.headers.cookie
+  // parse cookie
+  const userId = cookie?.split('=')[1] || randomName()
+
+  broadcast(ws, <MemberJoined memberName={userId} />)
 
   ws.on('message', (data) => {
     const message = JSON.parse(data.toString())
@@ -38,7 +42,6 @@ wss.on('connection', (ws) => {
     wss.clients.forEach((client) => {
       // Send the message to all clients except the sender
       if (client.readyState === WebSocket.OPEN) {
-        console.log(ws === client)
         broadcast(
           client,
           <Notification
@@ -53,10 +56,21 @@ wss.on('connection', (ws) => {
 })
 
 app.get('/', (req, res) => {
+  // check if cookie exists
+  const cookie = req.headers.cookie
+  if (!cookie) {
+    // genereate a new cookie for each request
+    res.setHeader('Set-Cookie', `userId=${randomName()}; HttpOnly; Path=/`)
+  }
+
   res.send(
     <Layout>
-      <div id="notifications"></div>
-      <Form />
+      <div class="flex flex-col gap-4">
+        <div id="notifications"></div>
+      </div>
+      <div class="p-4 fixed bottom-0 w-1/2 flex justify-center">
+        <Form />
+      </div>
     </Layout>
   )
 })
