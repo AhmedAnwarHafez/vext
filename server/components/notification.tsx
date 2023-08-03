@@ -10,10 +10,8 @@ export const Notification = (props: NotificationProps) => {
   return (
     <div
       id="notifications"
-      hx-swap-oob="beforeend"
-      class={`${
-        props.isSelf ? 'self-end' : 'self-start'
-      } w-10/12  flex flex-col`}
+      hx-swap-oob="beforebegin"
+      class={`${props.isSelf ? 'self-end' : 'self-start'} w-10/12  `}
     >
       {!props.isSelf ? <p class="">{props.userId}</p> : null}
       <p
@@ -30,7 +28,7 @@ export const Notification = (props: NotificationProps) => {
 export const MemberJoined = ({ memberName }: { memberName: string }) => {
   return (
     <div id="notifications" hx-swap-oob="beforeend">
-      <p>
+      <p class="text-slate-400">
         <em>{memberName}</em>has joined the chat
       </p>
     </div>
