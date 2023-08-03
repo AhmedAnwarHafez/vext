@@ -16,18 +16,8 @@ app.use(express.static(Path.join(__dirname, '../public')))
 const wss = new WebSocketServer({ port: 8080 })
 
 // Broadcast function to send messages to all connected clients
-function broadcast(
-  data: string,
-  { ws, excludeSelf = false }: { ws: WebSocket; excludeSelf: boolean }
-) {
-  wss.clients.forEach((client) => {
-    if (
-      client.readyState === WebSocket.OPEN &&
-      (!excludeSelf || client !== ws)
-    ) {
-      client.send(data, { binary: false })
-    }
-  })
+function broadcast(ws: WebSocket, data: string) {
+  ws.send(data, { binary: false })
 }
 
 // Map to store the WebSocket connection with the user ID
@@ -39,19 +29,16 @@ wss.on('connection', (ws) => {
   const userId = randomName()
   userMap.set(ws, userId) // Associate the WebSocket connection with the user ID
 
-  broadcast(<MemberJoined memberName={randomName()} />, {
-    ws,
-    excludeSelf: true,
-  })
+  broadcast(ws, <MemberJoined memberName={randomName()} />)
 
   ws.on('message', (data) => {
     const message = JSON.parse(data.toString())
     console.log('received: %s', message.chat_message)
 
-    broadcast(<Notification userId={userId} message={message.chat_message} />, {
+    broadcast(
       ws,
-      excludeSelf: false,
-    })
+      <Notification userId={userId} message={message.chat_message} />
+    )
   })
 })
 
