@@ -7,6 +7,7 @@ export function Textbox({ value, name }: { name: string; value: string }) {
       placeholder=" "
       value={value}
       name={name}
+      autocomplete="off"
     />
   )
 }
