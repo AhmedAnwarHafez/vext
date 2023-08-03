@@ -3,10 +3,10 @@
   "type": "module",
   "version": "0.1.0",
   "description": "vext",
-  "main": "server.tsx",
+  "main": "index.js",
   "scripts": {
     "start": "node dist/server",
-    "dev": "tsx watch server/server.tsx",
+    "dev": "tsx watch server/index.ts",
     "build": "esbuild --packages=external --platform=node --format=esm --outfile=dist/server.js --bundle server/index.ts",
     "knex": "knex --knexfile ./server/db/knexfile.js",
     "test": "vitest",
