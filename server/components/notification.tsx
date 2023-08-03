@@ -1,9 +1,19 @@
 import * as elements from 'typed-html'
 
-export const Notification = ({ message }: { message: string }) => {
+interface NotificationProps {
+  userId: string
+  message: string
+}
+
+export const Notification = (props: NotificationProps) => {
   return (
-    <div id="notifications" hx-swap-oob="afterend">
-      <p>{message}</p>
+    <div
+      id="notifications"
+      hx-swap-oob="afterend"
+      class="border rounded border-slate-100"
+    >
+      <p>{props.message}</p>
+      <p>{props.userId}</p>
     </div>
   )
 }

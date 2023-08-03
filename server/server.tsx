@@ -30,18 +30,25 @@ function broadcast(
   })
 }
 
+// Map to store the WebSocket connection with the user ID
+const userMap = new WeakMap<WebSocket, string>()
+
 wss.on('connection', (ws) => {
   console.log('connected')
+
+  const userId = randomName()
+  userMap.set(ws, userId) // Associate the WebSocket connection with the user ID
 
   broadcast(<MemberJoined memberName={randomName()} />, {
     ws,
     excludeSelf: true,
   })
+
   ws.on('message', (data) => {
     const message = JSON.parse(data.toString())
     console.log('received: %s', message.chat_message)
 
-    broadcast(<Notification message={message.chat_message} />, {
+    broadcast(<Notification userId={userId} message={message.chat_message} />, {
       ws,
       excludeSelf: false,
     })
