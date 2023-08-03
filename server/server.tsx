@@ -1,11 +1,17 @@
 import express from 'express'
+import * as Path from 'node:path'
+import * as URL from 'node:url'
 import * as elements from 'typed-html'
 import WebSocket, { WebSocketServer } from 'ws'
 
 import { MemberJoined, Notification } from './components/notification.tsx'
 import { Layout } from './Layout.tsx'
+import { randomName } from './fakeNames.ts'
 
 const app = express()
+
+const __dirname = Path.dirname(URL.fileURLToPath(import.meta.url))
+app.use(express.static(Path.join(__dirname, '../public')))
 const wss = new WebSocketServer({ port: 8080 })
 
 // Broadcast function to send messages to all connected clients
@@ -26,7 +32,7 @@ function broadcast(
 wss.on('connection', (ws) => {
   console.log('connected')
 
-  broadcast(<MemberJoined memberName={'hardcoded for now'} />, {
+  broadcast(<MemberJoined memberName={randomName()} />, {
     ws,
     excludeSelf: true,
   })
