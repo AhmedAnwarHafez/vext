@@ -26,7 +26,7 @@ wss.on('connection', (ws) => {
 app.get('/', (req, res) => {
   res.send(
     <Layout>
-      <div hx-ext="ws" ws-connect="ws://localhost:8080/chatroom">
+      <div hx-ext="ws" ws-connect="ws://localhost:8080">
         <div id="notifications" hx-swap-oob="beforeend">
           New message received
         </div>
