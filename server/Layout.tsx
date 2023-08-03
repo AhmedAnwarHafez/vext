@@ -9,7 +9,7 @@ export function Layout({ children }: Attributes) {
         <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
         <link href="/output.css" rel="stylesheet">
       </head>
-      <body class="bg-slate-800">
+      <body class="bg-slate-800 text-slate-50">
         <div hx-ext="ws" ws-connect="ws://localhost:8080">
           ${children}
           <div id="notifications"></div>

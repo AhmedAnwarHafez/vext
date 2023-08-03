@@ -7,6 +7,7 @@ import WebSocket, { WebSocketServer } from 'ws'
 import { MemberJoined, Notification } from './components/notification.tsx'
 import { Layout } from './Layout.tsx'
 import { randomName } from './fakeNames.ts'
+import { Textbox } from './components/Textbox.tsx'
 
 const app = express()
 
@@ -50,9 +51,13 @@ wss.on('connection', (ws) => {
 app.get('/', (req, res) => {
   res.send(
     <Layout>
-      <form ws-send _="on submit reset() me">
-        <input name="chat_message" value="" />
-        <button type="submit">Send</button>
+      <form ws-send _="on submit reset() me" class="flex p-4 gap-4 m-10">
+        <div class="">
+          <Textbox name="chat_message" value="" />
+        </div>
+        <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+          Send
+        </button>
       </form>
     </Layout>
   )
