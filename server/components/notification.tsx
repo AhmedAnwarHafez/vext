@@ -1,9 +1,17 @@
 import * as elements from 'typed-html'
 
-const Notification = ({ message }: { message: string }) => {
-  return `<div id="notifications" hx-swap-oob="afterend">
-<p>${message}</p>
-</div>`
+export const Notification = ({ message }: { message: string }) => {
+  return (
+    <div id="notifications" hx-swap-oob="afterend">
+      <p>${message}</p>
+    </div>
+  )
 }
 
-export default Notification
+export const MemberJoined = ({ memberName }: { memberName: string }) => {
+  return (
+    <div id="notifications" hx-swap-oob="afterend">
+      <p>${memberName} has joined the chat</p>
+    </div>
+  )
+}

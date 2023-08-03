@@ -2,17 +2,23 @@ import express from 'express'
 import * as elements from 'typed-html'
 import WebSocket, { WebSocketServer } from 'ws'
 
-import Notification from './components/notification.tsx'
+import { MemberJoined, Notification } from './components/notification.tsx'
 import { Layout } from './Layout.tsx'
 
 const app = express()
 const wss = new WebSocketServer({ port: 8080 })
 
 // Broadcast function to send messages to all connected clients
-function broadcast(data: string, isBinary: boolean) {
+function broadcast(
+  data: string,
+  { ws, excludeSelf = false }: { ws: WebSocket; excludeSelf: boolean }
+) {
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(data, { binary: isBinary })
+    if (
+      client.readyState === WebSocket.OPEN &&
+      (!excludeSelf || client !== ws)
+    ) {
+      client.send(data, { binary: false })
     }
   })
 }
@@ -20,11 +26,18 @@ function broadcast(data: string, isBinary: boolean) {
 wss.on('connection', (ws) => {
   console.log('connected')
 
-  ws.on('message', (data, isBinary) => {
+  broadcast(<MemberJoined memberName={'hardcoded for now'} />, {
+    ws,
+    excludeSelf: true,
+  })
+  ws.on('message', (data) => {
     const message = JSON.parse(data.toString())
     console.log('received: %s', message.chat_message)
 
-    broadcast(<Notification message={message.chat_message} />, isBinary)
+    broadcast(<Notification message={message.chat_message} />, {
+      ws,
+      excludeSelf: false,
+    })
   })
 })
 
