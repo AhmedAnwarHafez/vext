@@ -51,7 +51,7 @@ wss.on('connection', (ws, req) => {
 
   ws.on('message', (data) => {
     const message = JSON.parse(data.toString())
-    console.log('received: %s', message.chat_message)
+    console.log('received: %s', data)
 
     wss.clients.forEach((client) => {
       // Send the message to all clients except the sender
