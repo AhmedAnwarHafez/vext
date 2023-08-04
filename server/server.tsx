@@ -1,8 +1,10 @@
 import express from 'express'
+import cookie from 'cookie'
 import * as Path from 'node:path'
 import * as URL from 'node:url'
 import * as elements from 'typed-html'
 import WebSocket, { WebSocketServer } from 'ws'
+import http from 'http'
 
 import { MemberJoined, Notification } from './components/notification.tsx'
 import { Layout } from './Layout.tsx'
@@ -10,28 +12,28 @@ import { randomName } from './fakeNames.ts'
 import { Form } from './components/Form.tsx'
 
 const app = express()
-
+const server = http.createServer(app)
 const __dirname = Path.dirname(URL.fileURLToPath(import.meta.url))
 app.use(express.static(Path.join(__dirname, '../public')))
-const wss = new WebSocketServer({ port: 8080 })
+const chatWss = new WebSocketServer({ noServer: true })
+const pollWss = new WebSocketServer({ noServer: true })
 
 // Broadcast function to send messages to all connected clients
 function broadcast(ws: WebSocket, data: string) {
   ws.send(data, { binary: false })
 }
 
-wss.on('connection', (ws, req) => {
-  console.log('connected')
-
+chatWss.on('connection', (ws, req) => {
   ws.on('close', () => {
     console.log('disconnected')
     broadcast(ws, 'user left the chat')
   })
 
   // access the cookie
-  const cookie = req.headers.cookie
-  // parse cookie
-  const userId = cookie?.split('=')[1] || randomName()
+  const cookies = cookie.parse(req.headers.cookie || '')
+  const userId = cookies.userId || randomName()
+
+  console.log(`${userId} connected`)
 
   broadcast(
     ws,
@@ -45,7 +47,7 @@ wss.on('connection', (ws, req) => {
   broadcast(
     ws,
     <div id="participants" class="text-center top-1">
-      {wss.clients.size} are online
+      {chatWss.clients.size} are online
     </div>
   )
 
@@ -53,7 +55,7 @@ wss.on('connection', (ws, req) => {
     const message = JSON.parse(data.toString())
     console.log('received: %s', data)
 
-    wss.clients.forEach((client) => {
+    chatWss.clients.forEach((client) => {
       // Send the message to all clients except the sender
       if (client.readyState === WebSocket.OPEN) {
         broadcast(
@@ -67,6 +69,26 @@ wss.on('connection', (ws, req) => {
       }
     })
   })
+})
+
+pollWss.on('connection', (ws, req) => {
+  // Handle poll connections
+  console.log('poll connected')
+})
+
+// Handle the upgrade event to manually handle WebSocket connections
+server.on('upgrade', (request, socket, head) => {
+  if (request.url === '/chat') {
+    chatWss.handleUpgrade(request, socket, head, (ws) => {
+      chatWss.emit('connection', ws, request)
+    })
+  } else if (request.url === '/poll') {
+    pollWss.handleUpgrade(request, socket, head, (ws) => {
+      pollWss.emit('connection', ws, request)
+    })
+  } else {
+    socket.destroy()
+  }
 })
 
 app.get('/', (req, res) => {
@@ -86,7 +108,7 @@ app.get('/', (req, res) => {
         </div>
       </div>
       <div class="p-4 fixed bottom-0 w-1/2 flex justify-center">
-        <Form />
+        {/* <Form /> */}
       </div>
       <div>
         <p>What is the capital of France?</p>
@@ -105,4 +127,4 @@ app.get('/', (req, res) => {
   )
 })
 
-export default app
+export default server
