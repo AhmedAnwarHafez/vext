@@ -71,14 +71,6 @@ chatWss.on('connection', (ws, req) => {
   })
 })
 
-pollWss.on('connection', (ws, req) => {
-  // Handle poll connections
-  console.log('poll connected')
-  ws.on('message', (data) => {
-      console.log(data.toString())
-  })
-})
-
 // Handle the upgrade event to manually handle WebSocket connections
 server.on('upgrade', (request, socket, head) => {
   if (request.url === '/chat') {
@@ -94,6 +86,16 @@ server.on('upgrade', (request, socket, head) => {
   }
 })
 
+pollWss.on('connection', (ws, req) => {
+  // Handle poll connections
+  console.log('poll connected')
+  ws.on('message', (data) => {
+    const message = JSON.parse(data.toString())
+    const userId = cookie.parse(req.headers.cookie || '').userId
+    console.log(`${userId} - ${message.option}`)
+  })
+})
+
 app.get('/', (req, res) => {
   // check if cookie exists
   const cookie = req.headers.cookie
@@ -104,27 +106,38 @@ app.get('/', (req, res) => {
 
   res.send(
     <Layout>
-      <div class="flex flex-col gap-4 h-screen">
-        <div id="participants"></div>
-        <div id="messages" class="overflow-auto h-3/4">
-          <div id="notifications"></div>
-        </div>
-      </div>
-      <div class="p-4 fixed bottom-0 w-1/2 flex justify-center">
-        <Form /> 
-      </div>
+      {/* <div class="flex flex-col gap-4 h-screen"> */}
+      {/*   <div id="participants"></div> */}
+      {/*   <div id="messages" class="overflow-auto h-3/4"> */}
+      {/*     <div id="notifications"></div> */}
+      {/*   </div> */}
+      {/* </div> */}
+      {/* <div class="p-4 fixed bottom-0 w-1/2 flex justify-center"> */}
+      {/*   <Form />  */}
+      {/* </div> */}
       <div>
         <p>What is the capital of France?</p>
-        <ul class="flex flex-col gap-6">
-          <form hx-ext="ws" ws-send ws-connect="/poll">
-            <input type="hidden" name="option" value="Paris" />
-            <button class="border rounded p-5 hover:border-green-600">
-              Paris
-            </button>
-          </form>
-          <li class="border rounded p-5">Paris</li>
-          <li class="border rounded p-5">Paris</li>
-        </ul>
+
+        <form hx-ext="ws" ws-send ws-connect="/poll" _="on submit disable me">
+          <div>
+            <input type="radio" id="Paris" name="option" value="Paris" />
+            <label for="Paris">Paris</label>
+          </div>
+          <div>
+            <input type="radio" name="option" value="Berlin" />
+            <label for="Berlin">Berlin</label>
+          </div>
+          <div>
+            <input type="radio" name="option" value="London" />
+            <label for="London">London</label>
+          </div>
+          <button
+            class="border rounded p-5 hover:border-green-600 disabled:text-gray-400"
+            _="on click add @disabled  on me"
+          >
+            Vote
+          </button>
+        </form>
       </div>
     </Layout>
   )
