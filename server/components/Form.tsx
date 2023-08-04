@@ -3,7 +3,7 @@ import { Textbox } from './Textbox.tsx'
 
 export function Form() {
   return (
-    <form ws-send _="on submit reset() me" class="flex p-4 gap-4 m-10">
+    <form ws-send _="on submit reset() me" class="flex p-4 gap-4 m-2">
       <div class="">
         <Textbox name="chat_message" value="" />
       </div>
