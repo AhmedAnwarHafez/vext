@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
       {/* <div class="p-4 fixed bottom-0 w-1/2 flex justify-center"> */}
       {/*   <Form />  */}
       {/* </div> */}
-      <div>
+      <div id="vote">
         <p>What is the capital of France?</p>
 
         <form hx-ext="ws" ws-send ws-connect="/poll">

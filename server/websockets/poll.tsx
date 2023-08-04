@@ -11,5 +11,7 @@ pollWss.on('connection', (ws, req) => {
     const message = JSON.parse(data.toString())
     const userId = cookie.parse(req.headers.cookie || '').userId
     console.log(`${userId} - ${message.option}`)
+
+    ws.send('<div id="vote">Thanks</div>', { binary: false })
   })
 })
