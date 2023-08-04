@@ -88,6 +88,19 @@ app.get('/', (req, res) => {
       <div class="p-4 fixed bottom-0 w-1/2 flex justify-center">
         <Form />
       </div>
+      <div>
+        <p>What is the capital of France?</p>
+        <ul class="flex flex-col gap-6">
+          <form ws-send ws-connect="/poll">
+            <input type="hidden" name="option" value="Paris" />
+            <button class="border rounded p-5 hover:border-green-600">
+              Paris
+            </button>
+          </form>
+          <li class="border rounded p-5">Paris</li>
+          <li class="border rounded p-5">Paris</li>
+        </ul>
+      </div>
     </Layout>
   )
 })
