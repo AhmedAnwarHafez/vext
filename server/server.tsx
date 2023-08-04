@@ -33,6 +33,14 @@ wss.on('connection', (ws, req) => {
   // parse cookie
   const userId = cookie?.split('=')[1] || randomName()
 
+  broadcast(
+    ws,
+    <Notification
+      userId={userId}
+      message={`Your user id is ${userId}`}
+      isSelf={ws === ws}
+    />
+  )
   broadcast(ws, <MemberJoined memberName={userId} />)
   broadcast(
     ws,
