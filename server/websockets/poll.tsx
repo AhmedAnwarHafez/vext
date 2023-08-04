@@ -1,5 +1,9 @@
 import cookie from 'cookie'
+import * as elements from 'typed-html'
 import { WebSocketServer } from 'ws'
+
+import { broadcast } from '../broadcast.tsx'
+import Thanks from '../components/Thanks.tsx'
 
 const pollWss = new WebSocketServer({ noServer: true })
 export default pollWss
@@ -12,6 +16,6 @@ pollWss.on('connection', (ws, req) => {
     const userId = cookie.parse(req.headers.cookie || '').userId
     console.log(`${userId} - ${message.option}`)
 
-    ws.send('<div id="vote">Thanks</div>', { binary: false })
+    broadcast(ws, <Thanks />)
   })
 })
