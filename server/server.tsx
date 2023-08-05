@@ -13,6 +13,7 @@ import { Form } from './components/Form.tsx'
 import Builder from './components/Builder.tsx'
 
 const app = express()
+app.use(express.urlencoded({ extended: true }))
 const server = http.createServer(app)
 const __dirname = Path.dirname(URL.fileURLToPath(import.meta.url))
 app.use(express.static(Path.join(__dirname, '../public')))
@@ -41,6 +42,7 @@ app.get('/edit', (req, res) => {
 })
 
 app.post('/edit', (req, res) => {
+  const form = req.body
   res.redirect('/')
 })
 
