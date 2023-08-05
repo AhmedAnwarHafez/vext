@@ -10,6 +10,7 @@ import pollWss from './websockets/poll.tsx'
 import { Layout } from './Layout.tsx'
 import { randomName } from './fakeNames.ts'
 import { Form } from './components/Form.tsx'
+import Builder from './components/Builder.tsx'
 
 const app = express()
 const server = http.createServer(app)
@@ -29,6 +30,18 @@ server.on('upgrade', (request, socket, head) => {
   } else {
     socket.destroy()
   }
+})
+
+app.get('/edit', (req, res) => {
+  res.send(
+    <Layout>
+      <Builder />
+    </Layout>
+  )
+})
+
+app.post('/edit', (req, res) => {
+  res.redirect('/')
 })
 
 app.get('/', (req, res) => {
