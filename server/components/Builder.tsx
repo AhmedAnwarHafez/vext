@@ -6,7 +6,7 @@ function Option({ label, name }: { label: string; name: string }) {
       <label for={name} class="text-slate-50 flex-none ">
         {label}
       </label>
-      <textarea name={name} id={name} cols="30" rows="10"></textarea>
+      <textarea name={name} id={name} cols="30" rows="10" wrap="off"></textarea>
     </div>
   )
 }
