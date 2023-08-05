@@ -9,8 +9,8 @@ export function Layout({ children }: Attributes) {
         <script src="https://unpkg.com/hyperscript.org@0.9.9"></script>
         <link href="/output.css" rel="stylesheet">
       </head>
-      <body class="bg-slate-800 text-slate-50">
-        <div  class="w-2/3 mx-auto flex flex-col items-center">
+      <body class="bg-slate-800 text-slate-50 grid place-items-center w-full min-h-screen">
+        <div  class="">
           ${children}
         </div>
       </body>
