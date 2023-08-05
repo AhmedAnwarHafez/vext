@@ -1,9 +1,16 @@
 import * as elements from 'typed-html'
 import { Textbox } from './Textbox.tsx'
 
-export function Form() {
+export function ChatForm() {
   return (
-    <form hx-ext="ws" ws-send ws-connect="/chat" ws-send _="on submit reset() me" class="flex p-4 gap-4 m-2">
+    <form
+      hx-ext="ws"
+      ws-send
+      ws-connect="/chat"
+      ws-send
+      _="on submit reset() me"
+      class="flex p-4 gap-4 m-2"
+    >
       <div class="">
         <Textbox name="chat_message" value="" />
       </div>
