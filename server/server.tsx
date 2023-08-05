@@ -9,8 +9,9 @@ import chatWss from './websockets/chat.tsx'
 import pollWss from './websockets/poll.tsx'
 import { Layout } from './Layout.tsx'
 import { randomName } from './fakeNames.ts'
-import { Form } from './components/Form.tsx'
+import { ChatForm } from './components/ChatForm.tsx'
 import Builder from './components/Builder.tsx'
+import { Props, PublishedQuestion } from './components/PublishedQuestion.tsx'
 
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -33,6 +34,11 @@ server.on('upgrade', (request, socket, head) => {
   }
 })
 
+let question = {
+  question: '',
+  options: [],
+}
+
 app.get('/edit', (req, res) => {
   res.send(
     <Layout>
@@ -43,6 +49,16 @@ app.get('/edit', (req, res) => {
 
 app.post('/edit', (req, res) => {
   const form = req.body
+
+  question = {
+    question: form.question,
+    options: [
+      { name: form.optionA },
+      { name: form.optionB },
+      { name: form.optionC },
+      { name: form.optionD },
+    ],
+  }
   res.redirect('/')
 })
 
@@ -53,7 +69,6 @@ app.get('/', (req, res) => {
     // genereate a new cookie for each request
     res.setHeader('Set-Cookie', `userId=${randomName()}; HttpOnly; Path=/`)
   }
-
   res.send(
     <Layout>
       {/* <div class="flex flex-col gap-4 h-screen"> */}
@@ -65,30 +80,11 @@ app.get('/', (req, res) => {
       {/* <div class="p-4 fixed bottom-0 w-1/2 flex justify-center"> */}
       {/*   <Form />  */}
       {/* </div> */}
-      <div id="vote">
-        <p>What is the capital of France?</p>
-
-        <form hx-ext="ws" ws-send ws-connect="/poll">
-          <div>
-            <input type="radio" id="Paris" name="option" value="Paris" />
-            <label for="Paris">Paris</label>
-          </div>
-          <div>
-            <input type="radio" name="option" value="Berlin" />
-            <label for="Berlin">Berlin</label>
-          </div>
-          <div>
-            <input type="radio" name="option" value="London" />
-            <label for="London">London</label>
-          </div>
-          <button
-            class="border rounded p-5 hover:border-green-600 disabled:text-gray-400"
-            _="on click add @disabled on me"
-          >
-            Vote
-          </button>
-        </form>
-      </div>
+      <PublishedQuestion
+        question={question.question}
+        options={question.options}
+      />
+      {/* <div id="vote">{html}</div> */}
     </Layout>
   )
 })

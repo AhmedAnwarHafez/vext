@@ -7,7 +7,6 @@ export function ChatForm() {
       hx-ext="ws"
       ws-send
       ws-connect="/chat"
-      ws-send
       _="on submit reset() me"
       class="flex p-4 gap-4 m-2"
     >

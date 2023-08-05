@@ -13,8 +13,9 @@ pollWss.on('connection', (ws, req) => {
   console.log('poll connected')
   ws.on('message', (data) => {
     const message = JSON.parse(data.toString())
+    console.log(message)
     const userId = cookie.parse(req.headers.cookie || '').userId
-    console.log(`${userId} - ${message.option}`)
+    // console.log(`${userId} - ${message.option}`)
 
     broadcast(ws, <Thanks />)
   })
