@@ -1,4 +1,5 @@
 import * as elements from 'typed-html'
+import Button from './Button.tsx'
 
 function Option({
   label,
@@ -56,9 +57,7 @@ export default function Builder() {
         <Option label="C." name="optionC" />
         <Option label="D." name="optionD" />
 
-        <button class="place-self-end w-32 bg-slate-500 hover:bg-slate-700 text-white font-bold py-2 px-4 rounded">
-          Submit
-        </button>
+        <Button>Submit</Button>
       </form>
     </div>
   )

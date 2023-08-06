@@ -1,5 +1,6 @@
 import * as elements from 'typed-html'
 import { Option } from './PublishedQuestion.tsx'
+import Nav from './Nav.tsx'
 
 interface Props {
   question: string
@@ -9,18 +10,21 @@ interface Props {
 export default function Results(props: Props) {
   const { question, options } = props
   return (
-    <div class="text-slate-900 space-y-6">
-      <h1 class="text-3xl font-bold text-slate-50">{question}</h1>
-      <div class="flex flex-col gap-4">
-        {options.map((option) => (
-          <div class="flex gap-4">
-            <div class="text-slate-50 flex-none">{option.name}</div>
-            <div
-              class="bg-slate-500 h-4"
-              style={`width: ${option.votes * 10}%`}
-            ></div>
-          </div>
-        ))}
+    <div>
+      <Nav />
+      <div class="text-slate-900 space-y-6">
+        <h1 class="text-3xl font-bold text-slate-50">{question}</h1>
+        <div class="flex flex-col gap-4">
+          {options.map((option) => (
+            <div class="flex gap-4">
+              <div class="text-slate-50 flex-none">{option.name}</div>
+              <div
+                class="bg-slate-500 h-4"
+                style={`width: ${option.votes * 10}%`}
+              ></div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )

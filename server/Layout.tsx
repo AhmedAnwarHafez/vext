@@ -1,4 +1,6 @@
 import { Attributes } from 'typed-html'
+import Nav from './components/Nav.tsx'
+import * as elements from 'typed-html'
 
 export function Layout({ children }: Attributes) {
   return `<!DOCTYPE >
@@ -10,9 +12,7 @@ export function Layout({ children }: Attributes) {
         <link href="/output.css" rel="stylesheet">
       </head>
       <body class="bg-slate-800 text-slate-50 grid place-items-center w-full min-h-screen">
-        <div  class="">
           ${children}
-        </div>
       </body>
     </html>
 `

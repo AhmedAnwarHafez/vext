@@ -1,5 +1,6 @@
 import * as elements from 'typed-html'
 import { marked } from 'marked'
+import Button from './Button.tsx'
 
 export interface Option {
   name: string
@@ -37,9 +38,9 @@ export function PublishedQuestion({ question, options }: Props) {
             </label>
           </div>
         ))}
-      <button class="w-1/2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+      <Button class="w-1/2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
         Vote
-      </button>
+      </Button>
     </form>
   )
 }
