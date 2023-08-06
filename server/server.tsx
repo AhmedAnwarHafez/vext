@@ -1,6 +1,5 @@
 import express from 'express'
 import cookie from 'cookie'
-import * as fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import * as URL from 'node:url'
 import * as elements from 'typed-html'
@@ -14,6 +13,8 @@ import { ChatForm } from './components/ChatForm.tsx'
 import Builder from './components/Builder.tsx'
 import { Props, PublishedQuestion } from './components/PublishedQuestion.tsx'
 import Results from './components/Results.tsx'
+import Thanks from './components/Thanks.tsx'
+import { readPoll, writePoll } from './db.ts'
 
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -36,11 +37,6 @@ server.on('upgrade', (request, socket, head) => {
   }
 })
 
-let question = {
-  question: '',
-  options: [],
-}
-
 app.get('/edit', (req, res) => {
   res.send(
     <Layout>
@@ -52,54 +48,58 @@ app.get('/edit', (req, res) => {
 app.post('/edit', async (req, res) => {
   const form = req.body
 
-  const __dirname = Path.dirname(URL.fileURLToPath(import.meta.url))
-  const filePath = Path.join(__dirname, '../data.json')
-
   const question = {
     question: form.question,
     options: [
-      { name: form.optionA, votes: 0 },
-      { name: form.optionB, votes: 0 },
-      { name: form.optionC, votes: 0 },
-      { name: form.optionD, votes: 0 },
+      { id: 1, content: form.optionA, votes: [''] },
+      { id: 2, content: form.optionB, votes: [''] },
+      { id: 3, content: form.optionC, votes: [''] },
+      { id: 4, content: form.optionD, votes: [''] },
     ],
   }
 
-  await fs.writeFile(filePath, JSON.stringify(question, null, 2))
+  await writePoll(question)
 
   res.redirect('/results')
 })
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
   // check if cookie exists
-  const cookie = req.headers.cookie
-  if (!cookie) {
+  if (!req.headers.cookie) {
     // genereate a new cookie for each request
     res.setHeader('Set-Cookie', `userId=${randomName()}; HttpOnly; Path=/`)
   }
+
+  const userId = cookie.parse(req.headers.cookie || '').userId
+  const poll = await readPoll()
+
+  const alreadyVoted = poll.options.some((option) =>
+    option.votes.includes(userId)
+  )
+
+  if (alreadyVoted) {
+    res.send(
+      <Layout>
+        <div id="publishedQuestion">
+          <p>You already voted</p>
+        </div>
+      </Layout>
+    )
+    return
+  }
+
   res.send(
     <Layout>
-      <PublishedQuestion
-        question={question.question}
-        options={question.options}
-      />
+      <PublishedQuestion question={poll.question} options={poll.options} />
     </Layout>
   )
 })
 
-app.get('/results', (req, res) => {
-  question = {
-    question: 'How to center a div?',
-    options: [
-      { name: 'A.', votes: 10 },
-      { name: 'B.', votes: 2 },
-      { name: 'C.', votes: 0 },
-    ],
-  }
-
+app.get('/results', async (req, res) => {
+  const poll = await readPoll()
   res.send(
     <Layout>
-      <Results question={question.question} options={question.options} />
+      <Results question={poll.question} options={poll.options} />
     </Layout>
   )
 })

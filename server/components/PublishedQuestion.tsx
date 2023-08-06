@@ -3,9 +3,9 @@ import { marked } from 'marked'
 import Button from './Button.tsx'
 
 export interface Option {
-  name: string
-  label: string
-  votes: number
+  id: number
+  content: string
+  votes: string[]
 }
 
 export interface Props {
@@ -24,17 +24,20 @@ export function PublishedQuestion({ question, options }: Props) {
     >
       <h1 class="text-2xl text-left place-self-start">{question}</h1>
       {options
-        .filter((option) => option.name)
-        .map((option, i) => (
+        .filter((option) => option.content)
+        .map((option) => (
           <div class="flex gap-2">
             <input
               type="radio"
-              id={i.toString()}
+              id={option.id.toString()}
               name="option"
-              value={i.toString()}
+              value={option.id.toString()}
             />
-            <label for={i.toString()} class="w-auto py-4 overflow-x-auto">
-              {marked.parse(option.name)}
+            <label
+              for={option.id.toString()}
+              class="w-auto py-4 overflow-x-auto"
+            >
+              {marked.parse(option.content)}
             </label>
           </div>
         ))}

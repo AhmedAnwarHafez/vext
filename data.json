@@ -1,0 +1,25 @@
+{
+  "question": "How to center a div?",
+  "options": [
+    {
+      "id": 1,
+      "content": "```html\r\n<div class=\"flex justify-center\">\r\n  <div class=\"w-1/2 bg-red-500\">Centered</div>\r\n</div>\r\n```\r\n",
+      "votes": [""]
+    },
+    {
+      "id": 2,
+      "content": "```html\r\n<div class=\"grid place-items-center\">\r\n  <div class=\"w-1/2 bg-red-500\">Centered</div>\r\n</div>\r\n```\r\n",
+      "votes": ["", "reasonable overload"]
+    },
+    {
+      "id": 3,
+      "content": "",
+      "votes": [""]
+    },
+    {
+      "id": 4,
+      "content": "",
+      "votes": [""]
+    }
+  ]
+}
