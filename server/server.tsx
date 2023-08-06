@@ -60,7 +60,7 @@ app.post('/edit', (req, res) => {
       { name: form.optionD, votes: 0 },
     ],
   }
-  res.redirect('/')
+  res.redirect('/results')
 })
 
 app.get('/', (req, res) => {
