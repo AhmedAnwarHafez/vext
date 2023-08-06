@@ -1,9 +1,10 @@
 import * as elements from 'typed-html'
 import { marked } from 'marked'
 
-interface Option {
+export interface Option {
   name: string
   label: string
+  votes: number
 }
 
 export interface Props {

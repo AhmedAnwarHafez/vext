@@ -12,6 +12,7 @@ import { randomName } from './fakeNames.ts'
 import { ChatForm } from './components/ChatForm.tsx'
 import Builder from './components/Builder.tsx'
 import { Props, PublishedQuestion } from './components/PublishedQuestion.tsx'
+import Results from './components/Results.tsx'
 
 const app = express()
 app.use(express.urlencoded({ extended: true }))
@@ -53,10 +54,10 @@ app.post('/edit', (req, res) => {
   question = {
     question: form.question,
     options: [
-      { name: form.optionA },
-      { name: form.optionB },
-      { name: form.optionC },
-      { name: form.optionD },
+      { name: form.optionA, votes: 0 },
+      { name: form.optionB, votes: 0 },
+      { name: form.optionC, votes: 0 },
+      { name: form.optionD, votes: 0 },
     ],
   }
   res.redirect('/')
@@ -85,6 +86,23 @@ app.get('/', (req, res) => {
         options={question.options}
       />
       {/* <div id="vote">{html}</div> */}
+    </Layout>
+  )
+})
+
+app.get('/results', (req, res) => {
+  question = {
+    question: 'How to center a div?',
+    options: [
+      { name: 'A.', votes: 10 },
+      { name: 'B.', votes: 2 },
+      { name: 'C.', votes: 0 },
+    ],
+  }
+
+  res.send(
+    <Layout>
+      <Results question={question.question} options={question.options} />
     </Layout>
   )
 })
