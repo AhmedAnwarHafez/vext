@@ -1,5 +1,6 @@
 import express from 'express'
 import cookie from 'cookie'
+import * as fs from 'node:fs/promises'
 import * as Path from 'node:path'
 import * as URL from 'node:url'
 import * as elements from 'typed-html'
@@ -48,10 +49,13 @@ app.get('/edit', (req, res) => {
   )
 })
 
-app.post('/edit', (req, res) => {
+app.post('/edit', async (req, res) => {
   const form = req.body
 
-  question = {
+  const __dirname = Path.dirname(URL.fileURLToPath(import.meta.url))
+  const filePath = Path.join(__dirname, '../data.json')
+
+  const question = {
     question: form.question,
     options: [
       { name: form.optionA, votes: 0 },
@@ -60,6 +64,9 @@ app.post('/edit', (req, res) => {
       { name: form.optionD, votes: 0 },
     ],
   }
+
+  await fs.writeFile(filePath, JSON.stringify(question, null, 2))
+
   res.redirect('/results')
 })
 
