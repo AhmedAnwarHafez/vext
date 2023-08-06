@@ -72,20 +72,10 @@ app.get('/', (req, res) => {
   }
   res.send(
     <Layout>
-      {/* <div class="flex flex-col gap-4 h-screen"> */}
-      {/*   <div id="participants"></div> */}
-      {/*   <div id="messages" class="overflow-auto h-3/4"> */}
-      {/*     <div id="notifications"></div> */}
-      {/*   </div> */}
-      {/* </div> */}
-      {/* <div class="p-4 fixed bottom-0 w-1/2 flex justify-center"> */}
-      {/*   <Form />  */}
-      {/* </div> */}
       <PublishedQuestion
         question={question.question}
         options={question.options}
       />
-      {/* <div id="vote">{html}</div> */}
     </Layout>
   )
 })
